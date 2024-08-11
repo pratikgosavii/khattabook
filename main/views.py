@@ -177,6 +177,8 @@ def delete_customer(request, customer_id):
 
 def add_record(request, customer_id):
 
+    customer_instance = customer.objects.get(id = customer_id)
+
     if request.method == 'POST':
 
         forms = record_Form(request.POST)
@@ -197,7 +199,8 @@ def add_record(request, customer_id):
 
         context = {
             'form': forms,
-            'customer' : customer_id
+            'customer' : customer_id,
+            'customer_instance' : customer_instance,
         }
         return render(request, 'add_record.html', context)
 

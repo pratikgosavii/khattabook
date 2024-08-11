@@ -1,6 +1,6 @@
 {% extends 'base/base.html' %}
 
-{% block title %}Record List{% endblock title %}
+{% block title %}Sell List{% endblock title %}
 
 
 {% block head %}
@@ -61,7 +61,7 @@
     <div class="col-xl-12">
 
         <h3 style="margin-bottom: 50px;
-    margin-top: -32px;"> {{ customer_instance.name }} </h3>
+    margin-top: -32px; font-size: 19px;"> Customer : {{ customer_instance.name }} </h3>
 
     </div>
 
@@ -75,7 +75,7 @@
         <div style="margin-top: -27px;
     margin-bottom: 21px;">
 
-            <a href="{% url 'add_record' customer_id %}"> <input type="button" value="Add Record" class="btn btn-info"> </a>
+            <a href="{% url 'add_record' customer_id %}"> <input type="button" value="Add Sell" class="btn btn-info"> </a>
             <a href="{% url 'add_payment' customer_id %}"> <input type="button" value="Add Payment" class="btn btn-info"> </a>
 
         </div>
@@ -87,7 +87,7 @@
     ">
 
        
-    <a href="{% url 'view_customer_with_id' customer_id %}" class="menu-option"> List Record </a>
+    <a href="{% url 'view_customer_with_id' customer_id %}" class="menu-option"> List Sell </a>
     <a href="{% url 'view_customer_payment' customer_id %}" class="menu-option active"> List Payments </a>
  
 
@@ -103,7 +103,7 @@
 
                 <div class="col-12" style="display: flex;">
                     <div >
-                        <h4 class="box-title"> List Record </h4>
+                        <h4 class="box-title"> List Sell </h4>
                     </div>
 
                 <div style="text-align: right; display: flex;
