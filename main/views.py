@@ -29,6 +29,7 @@ def view_customer(request):
 
     customer_id = request.POST.get('customer')
 
+    customer_instance = customer.objects.get(id = customer_id)
 
     record_data = record.objects.filter(customer__id = customer_id)
 
@@ -40,6 +41,7 @@ def view_customer(request):
         'amo': amo,
         'outstaning_amount': outstaning_amount,
         'customer_id': customer_id,
+        'customer_instance' : customer_instance
     }
 
     return render(request, 'view_customer.html', context)
@@ -47,6 +49,8 @@ def view_customer(request):
 def view_customer_payment(request, customer_id):
 
     record_data = record.objects.filter(customer__id = customer_id).aggregate(payment_done_amount=Sum('amount'))["payment_done_amount"] or 0
+
+    customer_instance = customer.objects.get(id = customer_id)
 
     payment_data = payment.objects.filter(customer__id = customer_id)
     total_payment = payment_data.aggregate(total_payment=Sum('amount'))["total_payment"] or 0
@@ -58,6 +62,7 @@ def view_customer_payment(request, customer_id):
         'total_payment': total_payment,
         'customer_id': customer_id,
         'total_outstanding': total_outstanding,
+        'customer_instance': customer_instance,
     }
 
     return render(request, 'view_customer_payment.html', context)
@@ -69,6 +74,8 @@ def view_customer_with_id(request, customer_id):
 
     
     record_data = record.objects.filter(customer__id = customer_id)
+    
+    customer_instance = customer.objects.get(id = customer_id)
 
     payment_data = payment.objects.filter(customer__id = customer_id).aggregate(payment_done_amount=Sum('amount'))["payment_done_amount"] or 0
     amo = record_data.aggregate(amo=Sum('amount'))["amo"] or 0
@@ -78,6 +85,7 @@ def view_customer_with_id(request, customer_id):
         'amo': amo,
         'outstaning_amount': outstaning_amount,
         'customer_id': customer_id,
+        'customer_instance': customer_instance,
 
     }
 
