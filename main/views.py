@@ -116,13 +116,6 @@ def update_client(request, random_key_value):
         
 
 
-from django.http import HttpResponse
-import qrcode
-from io import BytesIO
-from django.core.files.base import ContentFile
-import base64
-
-
 
 
 def view_customer(request):
