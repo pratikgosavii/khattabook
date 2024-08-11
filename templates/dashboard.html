@@ -1,0 +1,265 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Dashboard{% endblock title %}
+
+
+{% block head %}
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>    <!-- imp -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script> 
+
+<style>
+
+
+
+  select {
+    border: 1px solid gray !important;
+    border-radius: 6px !important;
+    position: relative !important;
+    width: 231px !important;
+    margin: 10px !important;
+    line-height: 6ex !important;
+    padding-left: 14px !important;
+    height: 46px !important;
+  }
+
+
+    ul#notificationList {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    ul#notificationList li {
+        background-color: #f0f0f0;
+        border: 1px solid #ddd;
+        margin: 5px;
+        padding: 10px;
+    }
+
+
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+
+
+.container1212{
+  font-family: 'Montserrat', sans-serif;
+font-family: 'Montserrat', sans-serif;
+
+    width: 90%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    position: relative;
+}
+.container1212:before{
+    content: '';
+    position: absolute;
+    height: 450px;
+    top: -6rem;
+    left: -4.5rem;
+    opacity: .3;
+}
+.container1212:after{
+    content: '';
+    position: absolute;
+    width: 600px;
+    height: 350px;
+    border-radius: 50% 33% 50% 50%;
+    top: -5rem;
+    right: -4rem;
+    z-index: -1;
+    opacity: .5;
+}
+.container1212 > .box1, .container >.box2{
+    padding: 1rem 1rem 2rem;
+    position: relative;
+    border-radius: 10px;
+    background-color:#ffffff ;
+    box-shadow: 0 0 10px #f8f4ff, 0 0 10px #b5a6c1;
+    overflow: hidden;
+}
+.container1212 .xmark-box{
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background-color: #f9f9fb;
+    color: #555662;
+    width: 20px;
+    height: 20px;
+    border-radius: 0;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2.5px #f9f9fb;
+    text-align: center;
+    transition: all .2s;
+    cursor: pointer;
+}
+.container1212 .xmark-box:hover{
+    opacity: .8;
+}
+.container1212 > .box1 > .caption-box, .container1212 > .box2 > .caption-box{
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    position: relative;
+}
+.container1212 > .box1:after{
+    content: '';
+    position: absolute;
+    width: 300px;
+    height: 100px;
+    background-color: #d6ebf4;
+    opacity: .4;
+    border-radius: 50%;
+    top: 1.5rem;
+    left: -9rem;
+    rotate: 92deg;
+}
+.container1212 > .box2:after{
+    content: '';
+    position: absolute;
+    width: 300px;
+    height: 100px;
+    background-color: #facaf3;
+    opacity: .4;
+    border-radius: 50%;
+    top: 1.5rem;
+    left: -9rem;
+    rotate: 92deg;
+}
+.container1212 img{
+    width: 30px;
+    height: 30px;
+}
+.container1212 .caption-box{
+    margin-top: .8rem;
+}
+.container1212 .caption{
+    margin-left: .7rem;
+}
+.container1212 .caption h5 {
+    margin: 1rem 0 .5rem;
+    font-size: 15px;
+}
+.container1212 .caption p{
+    font-size: 14px;
+}
+
+
+
+.select2-container .select2-selection--single {
+    box-sizing: border-box;
+    cursor: pointer;
+    height: 41px !important;
+    padding: 5px 0px 0px 11px;
+
+}
+
+
+
+
+</style>
+
+<script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+
+{% endblock head %}
+
+{% block content %}
+
+{% comment %} 
+    <a href="{% url 'report_daily' %}"> <button class="btn btn-primary" type="submit">
+        Daily Report
+    </button> </a>
+    
+    <a href="{% url 'generate_report_main' %}"> <button class="btn btn-primary" type="submit">
+        Monthly Report
+    </button> </a><br><br> {% endcomment %}
+
+    <!-- Widgets  -->
+
+    
+        <div class="container1212" style="margin-bottom: 15px;" id="notificationDiv">
+           
+        </div>
+        
+    
+    
+    <div class="row">
+       
+        <div class="col-lg-3 col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="stat-widget-five">
+                        <div class="stat-icon dib flat-color-1">
+                            <i class="fa fa-cart-plus"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="text-left dib">
+                                <div class="stat-text"><span class="count">{{ customer_count }}</span></div>
+                                <div class="stat-heading">Clients</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-12" style="gap: 32px;
+    display: flex;
+    margin-top: 33px;">
+
+            <form action="{% url 'view_customer' %}" method="post">
+
+                {% csrf_token %}
+
+            <label for="customer" class="control-label mb-1" style="margin-left : 0px;">Customer</label>
+
+            <select class="sele" name="customer" id="customer">
+
+              {% for i in data %}
+  
+              {% if name != '---------' %}
+              <option value="{{ i.id }}"> {{ i.name }} </option>
+              {% endif %}
+{% endfor %}
+              
+            </select>
+
+            <input type="submit" class="btn btn-info" value="submit">
+
+        </form>
+
+
+        </div>
+      
+    </div>
+
+    
+
+    
+{% endblock content %}
+
+
+{% block js %}
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
+
+
+
+
+
+
+<script>
+    
+$('.sele').select2();
+
+</script>
+
+
+
+{% endblock js %}

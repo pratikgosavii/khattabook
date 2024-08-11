@@ -1,0 +1,140 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Record List{% endblock title %}
+
+
+{% block head %}
+
+<style>
+
+   
+    
+</style>
+
+{% endblock head %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            
+            {% comment %} <div class="col-sm-8">
+                <div class="page-header float-right">
+                    <div class="page-title">
+                        <ol class="breadcrumb text-right">
+                            <li><a href="#">Dashboard</a></li>
+                            <li><a href="#">Product</a></li>
+                            <li class="active">List</li>
+                        </ol>
+                    </div>
+                </div>
+            </div> {% endcomment %}
+        </div>
+    </div>
+</div>
+{% endblock breadcrumbs %}
+
+{% block content %}
+{% comment %} <div style="justify-content: center;display: flex;align-items: center;">
+    <a href="{% url 'add_godown' %}"> <button id="payment-button" style="background-color: #05386b; border: green; padding: 10px;border-radius: 12px;" type="button" class="btn-info ">
+         <span id="payment-button-amount">Add godown  +</span>
+     </button> </a>
+   
+</div><br> {% endcomment %}
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="box-title"> List Record </h4>
+            </div>
+            <div class="card-body--">
+                <div class="table-stats order-table ov-h">
+                    <table class="table ">
+                        <thead>
+                            <tr>
+                                <th class="serial">#</th>
+                                <th>Customer</th>
+                                <th>Amount</th>
+                                <th>Remark</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if data %}
+                            {% for i in data %}
+                            <tr>
+                                <td class="serial">{{ forloop.counter }}</td>
+                                <td>{{ i.customer }}</td>
+                                <td>{{ i.amount }}</td>
+                                <td>{{ i.remark }}</td>
+                                <td>{{ i.date }}</td>
+                                
+                                <td style="display: flex;
+                                gap: 12px; float: right;">  
+
+                              
+                                
+                                   <a href=""> <button id="payment-button"  style="background-color: #05386b; border: green; padding: 10px;border-radius: 12px;" type="submit" class="btn-info ">
+                                        <span id="payment-button-amount">Update</span>
+                                    </button>  </a>
+                                   
+                                
+                                    <a href=""> <button id="payment-button"  style="background-color: red; border: green; padding: 10px;border-radius: 12px;" type="submit" class="btn-info ">
+                                        <span id="payment-button-amount">Delete</span>
+                                    </button>  </a>
+                                   
+
+                                </td>
+                               
+                               
+                            </tr>
+                            {% endfor %}
+                            {% else %}
+                                <tr><td>No Record Data</td></tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div> <!-- /.table-stats -->
+            </div>
+        </div> <!-- /.card -->
+    </div>  <!-- /.col-lg-8 -->
+
+    
+</div>
+{% endblock content %}
+
+
+
+
+{% block js %}
+
+<script>
+
+
+
+    function copyToClipboard(text) {
+        // Create a temporary input element
+        var input = document.createElement('input');
+        input.setAttribute('value', text);
+        document.body.appendChild(input);
+    
+        // Select the text
+        input.select();
+    
+        // Copy to clipboard
+        document.execCommand('copy');
+    
+        // Remove the temporary input element
+        document.body.removeChild(input);
+    
+        // Notify the user
+        alert('URL copied to clipboard!');
+    }
+
+
+</script>
+
+
+{% endblock js %}

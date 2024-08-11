@@ -1,0 +1,411 @@
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from .models import *
+
+
+from .models import *
+from django.db.models import Sum
+
+from django.shortcuts import render, redirect
+from django.views.generic import ListView
+from django.contrib.auth.decorators import login_required
+
+from .models import *
+from .forms import *
+from .models import *
+
+from datetime import date
+
+from datetime import datetime
+from django.urls import reverse
+from django.http.response import HttpResponseRedirect, JsonResponse
+from django.contrib import messages
+
+
+
+import hashlib
+import base64
+
+def generate_key_from_id(instance_id):
+    # Generate a unique key using a hash function
+    hash_object = hashlib.sha256(str(instance_id).encode())
+    # Encode the hash in base64 to get a 64-character string
+    unique_key = base64.urlsafe_b64encode(hash_object.digest()).decode()[:64]
+    return unique_key
+
+
+
+
+def add_client(request):
+
+    if request.method == 'POST':
+
+        forms = client_Form(request.POST, request.FILES)
+
+        if forms.is_valid():
+            
+            new_record = forms.save(commit=False)
+            
+            # Save the record to get the unique ID
+            new_record.save()
+
+            # Generate a unique key based on the new record's ID
+            unique_key = generate_key_from_id(new_record.id)
+
+            # Update the record with the generated key
+            new_record.random_key = unique_key
+            new_record.save()
+
+            return redirect('list_client')
+        else:
+            print(forms.errors)
+    
+    else:
+
+        forms = client_Form()
+
+        context = {
+            'form': forms
+        }
+        return render(request, 'add_client.html', context)
+
+
+
+def home(request):
+
+    return render(request, 'index.html')
+
+def privacy_policy(request):
+
+    return render(request, 'privacy_policy.html')
+
+def contact_us(request):
+
+    return render(request, 'contact.html')
+
+
+def about_us(request):
+
+    return render(request, 'about_us.html')
+
+        
+import copy
+
+
+def update_client(request, random_key_value):
+
+    instance = client.objects.get(random_key=random_key_value)
+    instance_copy = copy.copy(instance)
+    if request.method == 'POST':
+        form = client_Form(request.POST, request.FILES, instance=instance)
+        if form.is_valid():
+            updated_client = form.save(commit=False)
+            updated_client.random_key = instance_copy.random_key  # Preserve the existing key
+            updated_client.save()
+            return redirect('list_client')
+        else:
+            print(form.errors)
+    else:
+        form = client_Form(instance=instance)
+
+    context = {
+        'form': form
+    }
+    return render(request, 'add_client.html', context)
+
+        
+
+
+from django.http import HttpResponse
+import qrcode
+from io import BytesIO
+from django.core.files.base import ContentFile
+import base64
+
+
+
+
+def view_customer(request):
+
+    customer_id = request.POST.get('customer')
+
+
+    record_data = record.objects.filter(customer__id = customer_id)
+
+    payment_data = payment.objects.filter(customer__id = customer_id).aggregate(payment_done_amount=Sum('amount'))["payment_done_amount"] or 0
+    amo = record_data.aggregate(amo=Sum('amount'))["amo"] or 0
+    outstaning_amount = amo - payment_data
+    context = {
+        'record_data': record_data,
+        'amo': amo,
+        'outstaning_amount': outstaning_amount,
+        'customer_id': customer_id,
+    }
+
+    return render(request, 'view_customer.html', context)
+
+def view_customer_payment(request, customer_id):
+
+    record_data = record.objects.filter(customer__id = customer_id).aggregate(payment_done_amount=Sum('amount'))["payment_done_amount"] or 0
+
+    payment_data = payment.objects.filter(customer__id = customer_id)
+    total_payment = payment_data.aggregate(total_payment=Sum('amount'))["total_payment"] or 0
+    
+    total_outstanding = record_data - total_payment
+
+    context = {
+        'payment_data': payment_data,
+        'total_payment': total_payment,
+        'customer_id': customer_id,
+        'total_outstanding': total_outstanding,
+    }
+
+    return render(request, 'view_customer_payment.html', context)
+
+
+
+
+def view_customer_with_id(request, customer_id):
+
+    
+    record_data = record.objects.filter(customer__id = customer_id)
+
+    payment_data = payment.objects.filter(customer__id = customer_id).aggregate(payment_done_amount=Sum('amount'))["payment_done_amount"] or 0
+    amo = record_data.aggregate(amo=Sum('amount'))["amo"] or 0
+    outstaning_amount = amo - payment_data
+    context = {
+        'record_data': record_data,
+        'amo': amo,
+        'outstaning_amount': outstaning_amount,
+        'customer_id': customer_id,
+
+    }
+
+    return render(request, 'view_customer.html', context)
+
+
+
+
+def add_customer(request):
+
+    if request.method == 'POST':
+
+        forms = customer_Form(request.POST)
+
+        if forms.is_valid():
+            
+           
+            forms.save()
+        
+            return redirect('list_customer')
+        
+        else:
+            print(forms.errors)
+    
+    else:
+
+        forms = customer_Form()
+
+        context = {
+            'form': forms
+        }
+        return render(request, 'add_customer.html', context)
+
+
+
+
+def update_customer(request, customer_id):
+
+    customer_instance = customer.objects.get(id = customer_id)
+
+    if request.method == 'POST':
+
+        forms = customer_Form(request.POST, instance = customer_instance)
+
+        if forms.is_valid():
+            
+           
+            forms.save()
+        
+            return redirect('list_customer')
+        
+        else:
+            print(forms.errors)
+    
+    else:
+
+        forms = customer_Form(instance=customer_instance)
+
+        context = {
+            'form': forms
+        }
+        return render(request, 'add_customer.html', context)
+
+
+
+
+
+def list_customer(request):
+
+    data = customer.objects.all()
+
+    context = {
+        'data': data
+    }
+
+    return render(request, 'list_customer.html', context)
+
+
+def delete_customer(request, customer_id):
+
+    customer.objects.get(id = customer_id).delete()
+
+    return redirect('list_customer.html')
+
+
+
+
+
+
+def add_record(request, customer_id):
+
+    if request.method == 'POST':
+
+        forms = record_Form(request.POST)
+
+        if forms.is_valid():
+            
+           
+            forms.save()
+        
+            return redirect(reverse('view_customer_with_id', args=[customer_id]))
+        
+        else:
+            print(forms.errors)
+    
+    else:
+
+        forms = record_Form()
+
+        context = {
+            'form': forms,
+            'customer' : customer_id
+        }
+        return render(request, 'add_record.html', context)
+
+
+
+
+
+def list_record(request,):
+
+    data = record.objects.all()
+
+    context = {
+        'data': data
+    }
+
+    return render(request, 'list_record.html', context)
+
+
+
+
+# def add_payment(request):
+
+#     if request.method == 'POST':
+
+
+def add_payment(request, customer_id):
+
+    customer_instance = customer.objects.get(id = customer_id)
+
+    if request.method == 'POST':
+
+
+            
+        updated_request = request.POST.copy()
+        updated_request.update({'customer': customer_instance.id})
+
+        forms = payment_Form(updated_request)
+
+        if forms.is_valid():
+            
+           
+            forms.save()
+        
+        
+            return redirect(reverse('view_customer_payment', args=[customer_id]))
+
+        
+        else:
+            print(forms.errors)
+    
+    else:
+
+        forms = payment_Form()
+
+        data = payment.objects.filter(customer = customer_instance)
+
+        total_paid = data.aggregate(Sum('amount'))['amount__sum'] or 0
+
+        context = {
+            'form': forms,
+            'data': data,
+            'customer_instance' : customer_instance,
+            'total_paid' : total_paid,
+        }
+        return render(request, 'add_payment.html', context)
+    
+
+
+def update_payment(request, payment_id):
+
+    payment_instance = payment.objects.get(id = payment_id)
+
+    if request.method == 'POST':
+
+
+            
+        updated_request = request.POST.copy()
+        updated_request.update({'customer': payment_instance.customer.id})
+
+        forms = payment_Form(updated_request, instance = payment_instance)
+
+        if forms.is_valid():
+            
+           
+            forms.save()
+
+            url = reverse('add_payment', args=[payment_instance.customer.id])
+        
+            return redirect(url)
+        
+        else:
+            print(forms.errors)
+    
+    else:
+
+        forms = payment_Form(instance = payment_instance)
+
+        context = {
+            'form': forms,
+        }
+        return render(request, 'update_payment.html', context)
+
+
+
+
+def delete_payment(request, payment_id):
+
+    data = payment.objects.get(id = payment_id)
+    data_copy = copy.copy(data)
+    data.delete()
+
+    context = {
+        'data': data
+    }
+
+    url = reverse('add_payment', args=[data_copy.customer.id])
+        
+    return redirect(url)
+
