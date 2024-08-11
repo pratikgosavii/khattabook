@@ -16,8 +16,8 @@ class customer_Form(forms.ModelForm):
             'name': forms.TextInput(attrs={
                 'class': 'form-control', 'id': 'name'
             }),
-            'address': forms.TextInput(attrs={
-                'class': 'form-control', 'id': 'address'
+            'mobile': forms.TextInput(attrs={
+                'class': 'form-control', 'id': 'mobile'
             }),
             'remark': forms.TextInput(attrs={
                 'class': 'form-control', 'id': 'random_key'

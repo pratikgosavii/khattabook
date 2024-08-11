@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 class customer(models.Model):
     
     name = models.CharField(max_length=50)
-    address = models.CharField(max_length=50)
+    mobile = models.CharField(max_length=50)
     remark = models.CharField(max_length=50)
 
 
