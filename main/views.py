@@ -97,7 +97,7 @@ def add_customer(request):
            
             forms.save()
         
-            return redirect('list_customer')
+            return redirect('dashboard')
         
         else:
             print(forms.errors)
