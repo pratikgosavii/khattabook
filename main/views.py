@@ -24,7 +24,7 @@ from django.contrib import messages
 
 
 
-
+@login_required(login_url='login')
 def view_customer(request):
 
     customer_id = request.POST.get('customer')
@@ -46,6 +46,8 @@ def view_customer(request):
 
     return render(request, 'view_customer.html', context)
 
+
+@login_required(login_url='login')
 def view_customer_payment(request, customer_id):
 
     record_data = record.objects.filter(customer__id = customer_id).aggregate(payment_done_amount=Sum('amount'))["payment_done_amount"] or 0
@@ -70,6 +72,7 @@ def view_customer_payment(request, customer_id):
 
 
 
+@login_required(login_url='login')
 def view_customer_with_id(request, customer_id):
 
     
@@ -94,6 +97,7 @@ def view_customer_with_id(request, customer_id):
 
 
 
+@login_required(login_url='login')
 def add_customer(request):
 
     if request.method == 'POST':
@@ -122,6 +126,7 @@ def add_customer(request):
 
 
 
+@login_required(login_url='login')
 def update_customer(request, customer_id):
 
     customer_instance = customer.objects.get(id = customer_id)
@@ -153,6 +158,7 @@ def update_customer(request, customer_id):
 
 
 
+@login_required(login_url='login')
 def list_customer(request):
 
     data = customer.objects.all()
@@ -164,6 +170,8 @@ def list_customer(request):
     return render(request, 'list_customer.html', context)
 
 
+
+@login_required(login_url='login')
 def delete_customer(request, customer_id):
 
     customer.objects.get(id = customer_id).delete()
@@ -175,6 +183,7 @@ def delete_customer(request, customer_id):
 
 
 
+@login_required(login_url='login')
 def add_record(request, customer_id):
 
     customer_instance = customer.objects.get(id = customer_id)
@@ -205,6 +214,7 @@ def add_record(request, customer_id):
         return render(request, 'add_record.html', context)
 
 
+@login_required(login_url='login')
 def update_record(request, record_id):
 
 
@@ -243,6 +253,7 @@ def update_record(request, record_id):
 import copy
 
 
+@login_required(login_url='login')
 def delete_record(request, record_id):
 
     data = record.objects.get(id = record_id)
@@ -255,6 +266,7 @@ def delete_record(request, record_id):
 
 
 
+@login_required(login_url='login')
 def list_record(request,):
 
     data = record.objects.all()
@@ -273,6 +285,7 @@ def list_record(request,):
 #     if request.method == 'POST':
 
 
+@login_required(login_url='login')
 def add_payment(request, customer_id):
 
     customer_instance = customer.objects.get(id = customer_id)
@@ -316,6 +329,7 @@ def add_payment(request, customer_id):
     
 
 
+@login_required(login_url='login')
 def update_payment(request, payment_id):
 
     payment_instance = payment.objects.get(id = payment_id)
@@ -352,6 +366,7 @@ def update_payment(request, payment_id):
 
 
 
+@login_required(login_url='login')
 def delete_payment(request, payment_id):
 
     data = payment.objects.get(id = payment_id)
