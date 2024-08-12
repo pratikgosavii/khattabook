@@ -205,6 +205,53 @@ def add_record(request, customer_id):
         return render(request, 'add_record.html', context)
 
 
+def update_record(request, record_id):
+
+
+    record_instance = record.objects.get(id = record_id)
+
+    customer_instance = record_instance.customer
+
+    if request.method == 'POST':
+
+        forms = record_Form(request.POST, instance = record_instance)
+
+        if forms.is_valid():
+            
+           
+            forms.save()
+        
+            return redirect(reverse('view_customer_with_id', args=[customer_instance.id]))
+        
+        else:
+            print(forms.errors)
+    
+    else:
+
+        forms = record_Form(instance = record_instance)
+
+        context = {
+            'form': forms,
+            'customer' : customer_instance.id,
+            'customer_instance' : customer_instance,
+        }
+        return render(request, 'add_record.html', context)
+
+
+
+
+import copy
+
+
+def delete_record(request, record_id):
+
+    data = record.objects.get(id = record_id)
+
+    record_instance = copy.copy(data)
+
+    data.delete()
+
+    return redirect(reverse('view_customer_with_id', args=[record_instance.customer.id]))
 
 
 
@@ -287,9 +334,8 @@ def update_payment(request, payment_id):
            
             forms.save()
 
-            url = reverse('add_payment', args=[payment_instance.customer.id])
-        
-            return redirect(url)
+            return redirect(reverse('view_customer_payment', args=[payment_instance.customer.id]))
+
         
         else:
             print(forms.errors)
@@ -312,11 +358,8 @@ def delete_payment(request, payment_id):
     data_copy = copy.copy(data)
     data.delete()
 
-    context = {
-        'data': data
-    }
+    
+    
+    return redirect(reverse('view_customer_payment', args=[data_copy.customer.id]))
 
-    url = reverse('add_payment', args=[data_copy.customer.id])
-        
-    return redirect(url)
 

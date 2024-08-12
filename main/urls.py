@@ -35,6 +35,8 @@ urlpatterns = [
     path('delete-customer/<customer_id>', delete_customer, name='delete_customer'),
 
     path('add-record/<customer_id>', add_record, name='add_record'),
+    path('update-record/<record_id>', update_record, name='update_record'),
+    path('delete-record/<record_id>', delete_record, name='delete_record'),
     path('list-record/', list_record, name='list_record'),
 
     path('add-payment/<customer_id>', add_payment, name='add_payment'),
