@@ -24,6 +24,13 @@ from django.contrib import messages
 
 
 
+from django.core.paginator import Paginator, EmptyPage
+
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+
+
+
 @login_required(login_url='login')
 def view_customer(request):
 
@@ -68,6 +75,48 @@ def view_customer_payment(request, customer_id):
     }
 
     return render(request, 'view_customer_payment.html', context)
+
+
+
+from .filters import *
+
+@login_required(login_url='login')
+def list_customer_pending_payment(request):
+
+    customers = customer.objects.all()
+    customer_data = []
+
+    customer_filters = customer_filter(request.GET, queryset=customers)
+    
+    filter_data = customer_filters.qs
+
+    for cust in filter_data:
+
+        record_data = record.objects.filter(customer=cust)
+        payment_data = payment.objects.filter(customer=cust).aggregate(payment_done_amount=Sum('amount'))["payment_done_amount"] or 0
+        amo = record_data.aggregate(amo=Sum('amount'))["amo"] or 0
+        outstanding_amount = amo - payment_data
+        
+        customer_data.append({
+            'customer': cust,
+            'outstanding_amount': outstanding_amount,
+        })
+
+    page = request.GET.get('page', 1)
+    paginator = Paginator(customer_data, 20)
+    try:
+        data = paginator.page(page)
+    except PageNotAnInteger:
+        data = paginator.page(1)
+    except EmptyPage:
+        data = paginator.page(paginator.num_pages)
+
+    context = {
+        'customer_data': data,
+        'customer_filters': customer_filters,
+    }
+
+    return render(request, 'customer_outstanding_list.html', context)
 
 
 
@@ -362,6 +411,9 @@ def update_payment(request, payment_id):
             'form': forms,
         }
         return render(request, 'update_payment.html', context)
+
+
+
 
 
 

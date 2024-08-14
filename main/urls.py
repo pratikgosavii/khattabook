@@ -29,6 +29,8 @@ urlpatterns = [
     path('view-customer-with-id/<customer_id>', view_customer_with_id, name='view_customer_with_id'),
     path('view-customer-payment/<customer_id>', view_customer_payment, name='view_customer_payment'),
 
+    path('list-customer-pending-payment', list_customer_pending_payment, name='list_customer_pending_payment'),
+
     path('add-customer/', add_customer, name='add_customer'),
     path('update-customer/<customer_id>', update_customer, name='update_customer'),
     path('list-customer/', list_customer, name='list_customer'),
@@ -41,6 +43,7 @@ urlpatterns = [
 
     path('add-payment/<customer_id>', add_payment, name='add_payment'),
     path('update-payment/<payment_id>', update_payment, name='update_payment'),
+
     path('delete-payment/<payment_id>', delete_payment, name='delete_payment'),
 
   

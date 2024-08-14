@@ -15,6 +15,10 @@ class customer(models.Model):
     remark = models.CharField(max_length=50)
 
 
+    def __str__(self):
+        return self.name
+
+
 class record(models.Model):
     
     customer = models.ForeignKey(customer, on_delete=models.CASCADE)
@@ -23,6 +27,9 @@ class record(models.Model):
     date = models.DateField(auto_now=False)
 
 
+    def __str__(self):
+        return self.customer.name
+
 
 class payment(models.Model):
     
@@ -30,3 +37,6 @@ class payment(models.Model):
     amount = models.IntegerField()
     date = models.DateField(auto_now=False)
     remark = models.CharField(max_length=50, null=True, blank=True)
+
+    def __str__(self):
+        return self.customer.name

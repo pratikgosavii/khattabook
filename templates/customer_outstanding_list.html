@@ -41,11 +41,47 @@
      </button> </a>
    
 </div><br> {% endcomment %}
+
+
+<br>
+
+    <p>
+    
+        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+        Filters
+        </button>
+    </p>
+
+    <div class="collapse" id="collapseExample">
+        <div class="card card-body" style="width: fit-content;">
+
+            <form method="get" action="" style="padding:15px;">
+
+                {% csrf_token %}
+
+                <div class="form-group" style="gap: 14px; width: 400px;">
+
+                    <label for="name" class="control-label mb-1" style="margin-left : 0px;">Builty No</label>
+                    {{ customer_filters.form.name }}
+                    <br>
+
+                    <a href="{% url 'list_customer_pending_payment' %}"><button class="btn btn-primary" type="button" > Reset </button></a>
+
+                    <button class="btn btn-primary" type="submit" > Submit </button>
+                
+                </div>
+                
+            </form>
+        </div>
+    </div>
+
+
+
 <div class="row">
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <h4 class="box-title"> List Customer </h4>
+                <h4 class="box-title"> List Customer Outstanding List </h4>
             </div>
             <div class="card-body--">
                 <div class="table-stats order-table ov-h">
@@ -55,41 +91,19 @@
                                 <th class="serial">#</th>
                                 <th>Name</th>
                                 <th>Mobile</th>
-                                <th>Remark</th>
-                                <th>Actions</th>
+                                <th>Outstanding</th>
                                 
                             </tr>
                         </thead>
                         <tbody>
-                            {% if data %}
-                            {% for i in data %}
+                            {% if customer_data %}
+                            {% for i in customer_data %}
                             <tr>
                                 <td class="serial">{{ forloop.counter }}</td>
-                                <td>{{ i.name }}</td>
-                                <td>{{ i.mobile }}</td>
-                                <td>{{ i.remark }}</td>
-                                
-                                <td style="display: flex;
-                                gap: 12px; float: right;">  
-
-                                   
-                                   
-                                   <a href="{% url 'add_record' i.id %}"> <button id="payment-button"  style="background-color: #05386b; border: green; padding: 10px;border-radius: 12px;" type="submit" class="btn-info ">
-                                        <span id="payment-button-amount">Add Sell</span>
-                                    </button>  </a>
-                                   
-                                
-                                   <a href="{% url 'view_customer_with_id' i.id %}"> <button id="payment-button"  style="background-color: #05386b; border: green; padding: 10px;border-radius: 12px;" type="submit" class="btn-info ">
-                                        <span id="payment-button-amount">View</span>
-                                    </button>  </a>
-                                   
-                                
-                                    <a href="{% url 'delete_customer' i.id %}"> <button id="payment-button"  style="background-color: red; border: green; padding: 10px;border-radius: 12px;" type="submit" class="btn-info ">
-                                        <span id="payment-button-amount">Delete</span>
-                                    </button>  </a>
-                                   
-
-                                </td>
+                                <td>{{ i.customer.name }}</td>
+                                <td>{{ i.customer.mobile }}</td>
+                                <td style="color:red;">{{ i.outstanding_amount  }} ₹</td>
+                           
                                
                                
                             </tr>
