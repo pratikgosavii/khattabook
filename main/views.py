@@ -83,7 +83,7 @@ from .filters import *
 @login_required(login_url='login')
 def list_customer_pending_payment(request):
 
-    customers = customer.objects.all()
+    customers = customer.objects.all().order_by('name')
     customer_data = []
 
     customer_filters = customer_filter(request.GET, queryset=customers)

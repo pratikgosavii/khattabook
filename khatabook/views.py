@@ -23,7 +23,7 @@ from django.contrib import messages
 @login_required(login_url='login')
 def dashboard(request):
 
-    data = customer.objects.all()
+    data = customer.objects.all().order_by('name')
     customer_count = data.count()
 
     context = {
