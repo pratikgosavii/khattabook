@@ -81,7 +81,17 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <h4 class="box-title"> List Customer Outstanding List </h4>
+
+                <div class="col-12" style="display: flex;">
+                    <div >
+                        <h4 class="box-title"> List Customer Outstanding </h4>
+                    </div>
+
+                    <div style="text-align: right; display: flex;width: 84%;justify-content: right;">
+                        <h4 class="box-title"> <span style="color: red; margin-right: 18px;"> Outstanding Amount Sum : {{ outstanding_amount_sum }} ₹ </span> </h4>
+                    </div>
+                </div>
+
             </div>
             <div class="card-body--">
                 <div class="table-stats order-table ov-h">

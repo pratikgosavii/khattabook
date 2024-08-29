@@ -90,6 +90,8 @@ def list_customer_pending_payment(request):
     
     filter_data = customer_filters.qs
 
+    outstanding_amount_sum = 0
+
     for cust in filter_data:
 
         record_data = record.objects.filter(customer=cust)
@@ -101,6 +103,8 @@ def list_customer_pending_payment(request):
             'customer': cust,
             'outstanding_amount': outstanding_amount,
         })
+
+        outstanding_amount_sum = outstanding_amount_sum + outstanding_amount
 
     page = request.GET.get('page', 1)
     paginator = Paginator(customer_data, 20)
@@ -114,6 +118,7 @@ def list_customer_pending_payment(request):
     context = {
         'customer_data': data,
         'customer_filters': customer_filters,
+        'outstanding_amount_sum': outstanding_amount_sum,
     }
 
     return render(request, 'customer_outstanding_list.html', context)
